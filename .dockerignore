@@ -1,0 +1,12 @@
+node_modules
+.next
+.git
+.env
+.env*.local
+test-results
+playwright-report
+coverage
+*.tsbuildinfo
+npm-debug.log*
+.DS_Store
+Thumbs.db

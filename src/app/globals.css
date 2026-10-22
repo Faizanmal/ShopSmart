@@ -1,0 +1,80 @@
+@import "tailwindcss";
+
+:root {
+  --bg0: #f3efe6;
+  --bg1: #e7f0ea;
+  --ink: #14201b;
+  --muted: #4d5c55;
+  --accent: #0f6a4f;
+  --accent-2: #c45c26;
+  --panel: rgba(255, 252, 246, 0.86);
+  --line: rgba(20, 32, 27, 0.12);
+  --danger: #9b2c2c;
+  --ok: #0f6a4f;
+  --warn: #9a6700;
+}
+
+@theme inline {
+  --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Fraunces", ui-serif, Georgia, serif;
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-2: var(--accent-2);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--font-sans);
+  background:
+    radial-gradient(1200px 600px at 10% -10%, #d9ebe2 0%, transparent 55%),
+    radial-gradient(900px 500px at 100% 0%, #f6e2d2 0%, transparent 50%),
+    linear-gradient(180deg, var(--bg0), var(--bg1));
+}
+
+a {
+  color: inherit;
+}
+
+::selection {
+  background: color-mix(in oklab, var(--accent) 28%, white);
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse-soft {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.animate-rise {
+  animation: rise 0.45s ease both;
+}
+
+.animate-pulse-soft {
+  animation: pulse-soft 1.4s ease-in-out infinite;
+}

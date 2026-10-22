@@ -1,0 +1,70 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: shopsmart-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: shopsmart
+      POSTGRES_PASSWORD: shopsmart
+      POSTGRES_DB: shopsmart
+    ports:
+      - "5433:5432"
+    volumes:
+      - shopsmart_pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U shopsmart -d shopsmart"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  mcp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: mcp
+    container_name: shopsmart-mcp
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://shopsmart:shopsmart@db:5432/shopsmart?schema=public
+      MCP_PORT: "3101"
+      MCP_HOST: "0.0.0.0"
+      MCP_ALLOWED_ORIGINS: http://localhost:3000,http://127.0.0.1:3000,http://web:3000
+      PENDING_CONSENT_TTL_SECONDS: "300"
+      PRODUCT_PROVIDER: ${PRODUCT_PROVIDER:-demo}
+      SERPAPI_API_KEY: ${SERPAPI_API_KEY:-}
+    ports:
+      - "3101:3101"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: web
+    container_name: shopsmart-web
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://shopsmart:shopsmart@db:5432/shopsmart?schema=public
+      MCP_SERVER_URL: http://mcp:3101/mcp
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
+      # LLM_PROVIDER: none (deterministic) | openai | bedrock
+      # For bedrock on EC2: set LLM_PROVIDER=bedrock + AWS_REGION, attach an
+      # instance IAM role (bedrock:InvokeModel), and raise the EC2 metadata
+      # hop limit to 2 so containers can obtain role credentials.
+      LLM_PROVIDER: ${LLM_PROVIDER:-none}
+      PRODUCT_PROVIDER: ${PRODUCT_PROVIDER:-demo}
+      SERPAPI_API_KEY: ${SERPAPI_API_KEY:-}
+      AWS_REGION: ${AWS_REGION:-us-east-1}
+      BEDROCK_MODEL_ID: ${BEDROCK_MODEL_ID:-amazon.nova-lite-v1:0}
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+      mcp:
+        condition: service_started
+
+volumes:
+  shopsmart_pg:

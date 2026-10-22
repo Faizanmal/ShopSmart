@@ -1,0 +1,62 @@
+{
+  "name": "shopsmart",
+  "version": "1.0.0",
+  "private": true,
+  "description": "ShopSmart — AI shopping assistant with evidence-backed decisions and consent-controlled cart",
+  "scripts": {
+    "dev": "concurrently -n web,mcp -c cyan,magenta \"npm run dev:web\" \"npm run dev:mcp\"",
+    "dev:web": "next dev",
+    "dev:mcp": "tsx watch mcp-server/index.ts",
+    "build": "next build",
+    "start": "next start",
+    "start:mcp": "tsx mcp-server/index.ts",
+    "lint": "next lint",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate deploy",
+    "db:migrate:dev": "prisma migrate dev",
+    "db:push": "prisma db push",
+    "db:seed": "tsx prisma/seed.ts",
+    "db:reset": "prisma migrate reset --force",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "postinstall": "prisma generate",
+    "setup": "npm install && docker compose up -d db && node scripts/wait-for-db.mjs && prisma migrate deploy && npm run db:seed"
+  },
+  "dependencies": {
+    "@aws-sdk/client-bedrock-runtime": "^3.1154.0",
+    "@modelcontextprotocol/sdk": "^1.25.1",
+    "@prisma/client": "^6.16.2",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "lucide-react": "^0.544.0",
+    "next": "^15.5.4",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "tailwind-merge": "^3.3.1",
+    "zod": "^3.25.76",
+    "zustand": "^5.0.8"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.55.0",
+    "@tailwindcss/postcss": "^4.1.13",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@types/node": "^22.18.6",
+    "@types/react": "^19.1.13",
+    "@types/react-dom": "^19.1.9",
+    "concurrently": "^9.2.1",
+    "eslint": "^9.36.0",
+    "eslint-config-next": "^15.5.4",
+    "prisma": "^6.16.2",
+    "tailwindcss": "^4.1.13",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
+  }
+}

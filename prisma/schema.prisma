@@ -1,0 +1,192 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum CriterionKind {
+  HARD
+  SOFT
+  MISSING
+  UNVERIFIABLE
+}
+
+enum MessageRole {
+  USER
+  ASSISTANT
+  SYSTEM
+  TOOL
+}
+
+enum ConsentStatus {
+  PENDING
+  CONSUMED
+  CANCELLED
+  EXPIRED
+}
+
+enum DataProviderMode {
+  DEMO
+  LIVE
+}
+
+model ShoppingSession {
+  id            String   @id @default(cuid())
+  locale        String   @default("en-IN")
+  currency      String   @default("INR")
+  title         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  turns         ConversationTurn[]
+  brief         ShoppingBrief?
+  shortlist     ShortlistItem[]
+  cartItems     CartItem[]
+  pendingActions PendingConsentAction[]
+  auditEvents   AuditEvent[]
+}
+
+model ConversationTurn {
+  id          String      @id @default(cuid())
+  sessionId   String
+  role        MessageRole
+  content     String
+  toolCalls   Json?
+  createdAt   DateTime    @default(now())
+
+  session     ShoppingSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId, createdAt])
+}
+
+model ShoppingBrief {
+  id              String   @id @default(cuid())
+  sessionId       String   @unique
+  rawText         String
+  categoryHint    String?
+  budgetMinInr    Int?
+  budgetMaxInr    Int?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  session         ShoppingSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  criteria        Criterion[]
+}
+
+model Criterion {
+  id          String        @id @default(cuid())
+  briefId     String
+  kind        CriterionKind
+  key         String
+  label       String
+  value       String
+  sourceText  String?
+  createdAt   DateTime      @default(now())
+
+  brief       ShoppingBrief @relation(fields: [briefId], references: [id], onDelete: Cascade)
+
+  @@index([briefId])
+}
+
+model Product {
+  id              String           @id
+  name            String
+  brand           String
+  model           String?
+  variant         String?
+  category        String
+  description     String
+  priceInr        Int
+  currency        String           @default("INR")
+  imageUrl        String?
+  sourceUrl       String
+  retailer        String
+  seller          String?
+  availability    String?
+  specs           Json
+  warranty        String?
+  deliveryInfo    String?
+  evidence        Json
+  missingFields   String[]
+  conflictingFields String[]
+  dataProvider    DataProviderMode @default(DEMO)
+  lastVerifiedAt  DateTime
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  shortlistItems  ShortlistItem[]
+  cartItems       CartItem[]
+}
+
+model ShortlistItem {
+  id         String   @id @default(cuid())
+  sessionId  String
+  productId  String
+  note       String?
+  createdAt  DateTime @default(now())
+
+  session    ShoppingSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  product    Product         @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([sessionId, productId])
+  @@index([sessionId])
+}
+
+model CartItem {
+  id           String   @id @default(cuid())
+  sessionId    String
+  productId    String
+  variant      String   @default("")
+  quantity     Int
+  unitPriceInr Int
+  retailer     String
+  sourceUrl    String
+  addedAt      DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  session      ShoppingSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  product      Product         @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([sessionId, productId, variant])
+  @@index([sessionId])
+}
+
+model PendingConsentAction {
+  id              String        @id @default(cuid())
+  sessionId       String
+  actionType      String
+  status          ConsentStatus @default(PENDING)
+  productId       String
+  variant         String?
+  quantity        Int
+  unitPriceInr    Int
+  retailer        String
+  sourceUrl       String
+  payloadHash     String
+  // For CART_UPDATE / CART_REMOVE pending actions
+  cartItemId      String?
+  targetQuantity  Int?
+  expiresAt       DateTime
+  consumedAt      DateTime?
+  cancelledAt     DateTime?
+  createdAt       DateTime      @default(now())
+
+  session         ShoppingSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId, status])
+}
+
+model AuditEvent {
+  id         String   @id @default(cuid())
+  sessionId  String
+  eventType  String
+  detail     Json
+  createdAt  DateTime @default(now())
+
+  session    ShoppingSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId, createdAt])
+}
