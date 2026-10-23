@@ -69,7 +69,7 @@ Sessions are isolated: cart and pending actions are always scoped by `sessionId`
 | `confirm_cart_change` | Cart, if valid | Executes a confirmed update/remove exactly once |
 | `update_cart_item` / `remove_cart_item` | Creates pending only | Deprecated aliases of the propose tools — never mutate directly |
 
-**Forbidden:** any purchase/checkout/payment/order tool or HTTP endpoint.
+**Forbidden:** any purchase/checkout/payment/order tool. Buy via the retailer link only.
 
 ## Agent strategy
 

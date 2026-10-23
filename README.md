@@ -13,8 +13,8 @@ This project targets the Amazon AppDev 2026 **Alexa+** track with a self-hosted 
 - Constraint & compatibility verification (violations are never hidden behind scores)
 - Explainable side-by-side comparison
 - Shortlist + multi-turn session memory
-- Consent-bound cart: `propose_cart_add` never mutates; `confirm_cart_add` validates pending action
-- No purchase, checkout, payment, or order-placement tools/endpoints
+- Consent-bound cart: `propose_cart_add` never mutates; `confirm_cart_add` / `confirm_cart_change` validate pending actions
+- Buy yourself via the retailer link on cards / cart — no checkout, payment, or order-placement tools
 - Works without an LLM API key (deterministic orchestrator)
 
 ## Architecture (short)
@@ -100,7 +100,7 @@ See [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md). Short version:
 
 `search_products`, `get_product_details`, `verify_product_requirements`, `compare_products`, `manage_shortlist`, `propose_cart_add`, `confirm_cart_add`, `propose_cart_update`, `propose_cart_remove`, `confirm_cart_change`, `get_cart`, `update_cart_item` (proposal-only alias), `remove_cart_item` (proposal-only alias)
 
-Forbidden by design: checkout / purchase / payment / place_order. No such tool or HTTP endpoint exists.
+Forbidden by design: checkout / purchase / payment / place_order. Buy via the retailer link only.
 
 ## Tests
 

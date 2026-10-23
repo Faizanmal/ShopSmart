@@ -37,9 +37,6 @@ export function classifyConfirmationIntent(raw: string): ConfirmationIntent {
     text.length <= 80 &&
     !/^(confirm\?|approve\?)/.test(text)
   ) {
-    // Require some explicitness beyond the single word "confirm" alone?
-    // Single "confirm"/"approve" after a proposal dialog is acceptable in chat,
-    // but bare "yes"/"ok" are not.
     return "confirm";
   }
 
@@ -55,14 +52,18 @@ export function classifyConfirmationIntent(raw: string): ConfirmationIntent {
 export function isImmediatePurchaseAttempt(raw: string): boolean {
   const text = raw.trim().toLowerCase();
   return (
-    /\b(buy now|checkout|check out|pay now|place (the |an )?order|submit (my |the )?payment|complete (the |my )?purchase|pay for (it|this|that))\b/.test(text) ||
+    /\b(buy now|checkout|check out|pay now|place (the |an )?order|submit (my |the )?payment|complete (the |my )?purchase|pay for (it|this|that))\b/.test(
+      text,
+    ) ||
     /\bpurchase (it|this|that|now|immediately)\b/.test(text) ||
-    /\border (it|this|that|now)\b/.test(text)
+    /\border (it|this|that|now)\b/.test(text) ||
+    /\bbuy (it|this|that|now)\b/.test(text) ||
+    /\bbuy the\b/.test(text)
   );
 }
 
 export const PURCHASE_REFUSAL_MESSAGE =
-  "I can't purchase, check out, or submit payment — ShopSmart never does that, and there is no checkout or payment tool. I can research and compare products, and add an item to your ShopSmart planning cart only after you confirm a specific proposal. When you're ready to buy, use the retailer link in the cart to complete the purchase manually on the retailer's website.";
+  "I can't purchase, check out, or submit payment — ShopSmart never does that. Open the retailer link on the product card or in your planning cart and complete the buy yourself on the retailer's site.";
 
 export function isExplicitConfirmMessage(raw: string): boolean {
   return classifyConfirmationIntent(raw) === "confirm";

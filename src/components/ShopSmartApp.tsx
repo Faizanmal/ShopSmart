@@ -394,7 +394,7 @@ export function ShopSmartApp() {
           <p className="mt-2 max-w-2xl text-sm text-[var(--muted)] sm:text-base">
             Constraint-first shopping for India (INR). Catalog results are a dated snapshot of
             real products and retailer links — not live pricing. Claims without evidence stay
-            unknown — ShopSmart never purchases on your behalf.
+            unknown — ShopSmart never purchases on your behalf. Buy via the retailer link.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -614,7 +614,7 @@ export function ShopSmartApp() {
                   Planning cart
                 </h2>
                 <p className="mt-1 text-sm text-[var(--muted)]">
-                  ShopSmart cart only — complete purchase manually on the retailer site.
+                  ShopSmart cart only — buy by opening the retailer link yourself.
                 </p>
               </div>
               <Button variant="ghost" onClick={() => setCartOpen(false)}>

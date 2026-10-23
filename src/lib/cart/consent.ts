@@ -471,12 +471,15 @@ export async function confirmPendingAction(
       return { ok: true, cartItemId: updated.id, message: "Cart quantity updated once in ShopSmart planning cart." };
     }
 
-    // CART_REMOVE
-    await tx.cartItem.delete({ where: { id: pending.cartItemId! } });
-    await audit(input.sessionId, "cart.confirm_success", {
-      pendingActionId: pending.id, actionType, cartItemId: pending.cartItemId,
-    }, tx);
-    return { ok: true, cartItemId: pending.cartItemId!, message: "Item removed once from ShopSmart planning cart." };
+    if (actionType === "CART_REMOVE") {
+      await tx.cartItem.delete({ where: { id: pending.cartItemId! } });
+      await audit(input.sessionId, "cart.confirm_success", {
+        pendingActionId: pending.id, actionType, cartItemId: pending.cartItemId,
+      }, tx);
+      return { ok: true, cartItemId: pending.cartItemId!, message: "Item removed once from ShopSmart planning cart." };
+    }
+
+    return { ok: false, error: `Unsupported pending action type: ${actionType}`, code: "wrong_action_type" };
   });
 }
 

@@ -23,7 +23,7 @@ function createShopSmartServer() {
     },
     {
       instructions:
-        "ShopSmart MCP tools for evidence-backed shopping. propose_cart_add never mutates the cart; confirm_cart_add requires explicit approval of a pending action. Never place orders or take payment.",
+        "ShopSmart MCP tools for evidence-backed shopping. propose_cart_add never mutates the cart; confirm_cart_change requires explicit approval of a pending action. Never place orders or take payment — buying is via the retailer link in the cart.",
     },
   );
 

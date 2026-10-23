@@ -40,7 +40,15 @@ Single EC2 instance running the repo `docker-compose.yml` (`db` + `mcp` + `web`)
 4. Install Docker (Docker Engine + Compose plugin), clone the repo, then:
 
    ```bash
-   cp .env.example .env   # set LLM_PROVIDER=bedrock, AWS_REGION=us-east-1, BEDROCK_MODEL_ID=amazon.nova-lite-v1:0
+   # VM .env (Compose reads it; DATABASE_URL/MCP_SERVER_URL are set per-service inside Compose — don't copy the localhost .env.example values)
+   cat > .env <<EOF
+   NEXT_PUBLIC_APP_URL=http://<public-dns>:3000
+   MCP_ALLOWED_ORIGINS=http://<public-dns>:3000,http://localhost:3000,http://127.0.0.1:3000
+   PRODUCT_PROVIDER=demo
+   LLM_PROVIDER=bedrock
+   AWS_REGION=us-east-1
+   BEDROCK_MODEL_ID=amazon.nova-lite-v1:0
+   EOF
    docker compose up -d db
    docker compose run --rm web npx prisma migrate deploy
    docker compose up --build -d

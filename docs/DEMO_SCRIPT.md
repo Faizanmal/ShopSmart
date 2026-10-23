@@ -66,9 +66,13 @@ Click **Approve add to ShopSmart cart**. The cart drawer opens:
 
 ### 2:30–3:00 — ShopSmart never purchases
 
-In the chat box, type: **"Buy the Crucial SSD now, checkout and submit my payment immediately"** and Send.
+In the cart, click **Open retailer link** on the Crucial MX500.
 
-> "ShopSmart refuses. There is no purchase, checkout, or payment tool in the MCP server and no such endpoint in the app — you can check the 13-tool list. The cart is a planning cart; to actually buy, I open the retailer's source link myself and check out there, manually."
+> "That's the buy path — you finish on the retailer site. ShopSmart never places the order or takes payment."
+
+In chat, type: **"Buy the Crucial SSD now, checkout and submit my payment immediately"** and Send.
+
+> "ShopSmart refuses. There is no checkout or payment tool. Open the retailer link yourself."
 
 Close on the tagline:
 

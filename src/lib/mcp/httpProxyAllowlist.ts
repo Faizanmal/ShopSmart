@@ -8,8 +8,9 @@
  * making it an undocumented second confirmation surface. Direct MCP
  * clients can still call confirm tools over the MCP protocol itself —
  * that trusted-client surface is disclosed in docs/KNOWN_LIMITATIONS.md.
- * Purchase/checkout/payment tool names are not on the list either (no
- * such MCP tools exist; the executor rejects unknown names regardless).
+ * Confirm tools stay excluded: over HTTP, confirmation is only via
+ * POST /api/cart/confirm. Purchase/checkout/payment tool names do not
+ * exist (no such MCP tools; the executor rejects unknown names).
  */
 export const HTTP_PROXY_ALLOWED_TOOLS = new Set([
   "search_products",

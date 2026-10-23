@@ -343,4 +343,5 @@ describe.runIf(hasDb)("purchase-safety state machine", () => {
     expect(cart.items).toHaveLength(1);
     expect(cart.items[0].productId).toBe(CLONE);
   });
+
 });

@@ -20,7 +20,7 @@ ShopSmart explores the opposite contract: **hard constraints are enforced in cod
 2. **Evidence-backed research.** Products return with structured specs, source links, provider labels, conflicting/missing field flags, and verification timestamps. Every important claim is classified as verified, provider claim, or Unknown.
 3. **Constraint verification.** Each candidate is checked against the ledger. Violations (wrong form factor, wrong interface, under capacity, over budget) fail openly on the card and in the comparison — never hidden behind a recommendation score.
 4. **Explainable comparison.** Side-by-side table with known prices, specs, warranty, per-constraint verdicts with evidence, and explicit unknowns. Unknown delivery/tax costs are not treated as zero.
-5. **Consent-bound planning cart.** `propose_cart_add` creates a pending, fingerprinted, expiring server-side action and **does not change the cart**. Only `confirm_cart_add` with explicit approval of that exact proposal (same session, unexpired, product/variant/quantity/price/retailer unchanged) mutates the cart — exactly once. Replayed, expired, cross-session, stale-priced, or ambiguous ("yes"/"ok") confirmations are rejected. Immediate purchase/checkout/payment requests are refused: no such tool or endpoint exists.
+5. **Consent-bound planning cart.** `propose_cart_add` creates a pending, fingerprinted, expiring server-side action and **does not change the cart**. Only confirm with explicit approval of that exact proposal mutates the cart — exactly once. Buy by opening the retailer link yourself. Immediate purchase/checkout/payment requests are refused: no such tool exists.
 6. **Session memory.** Brief, ledger, shortlist, cart, and conversation persist in PostgreSQL and survive refresh.
 
 ## Differentiating features
@@ -45,7 +45,7 @@ Domain logic (brief parsing, verification, comparison, consent) is shared TypeSc
 
 - Transport: Streamable HTTP with `enableJsonResponse`, per-session transports, Origin allowlist, `/health` endpoint.
 - Tools: `search_products`, `get_product_details`, `verify_product_requirements`, `compare_products`, `manage_shortlist`, `propose_cart_add`, `confirm_cart_add`, `propose_cart_update`, `propose_cart_remove`, `confirm_cart_change`, `get_cart`, plus proposal-only aliases `update_cart_item` / `remove_cart_item`.
-- Deliberately absent: any checkout, purchase, payment, or order tool. Tests assert unknown tools (including `checkout`) are rejected.
+- Deliberately absent: any checkout, purchase, payment, or order tool. Buy via the retailer link only.
 
 ## Setup (verified)
 

@@ -8,7 +8,7 @@ services:
       POSTGRES_PASSWORD: shopsmart
       POSTGRES_DB: shopsmart
     ports:
-      - "5433:5432"
+      - "127.0.0.1:5433:5432"
     volumes:
       - shopsmart_pg:/var/lib/postgresql/data
     healthcheck:
@@ -28,12 +28,12 @@ services:
       DATABASE_URL: postgresql://shopsmart:shopsmart@db:5432/shopsmart?schema=public
       MCP_PORT: "3101"
       MCP_HOST: "0.0.0.0"
-      MCP_ALLOWED_ORIGINS: http://localhost:3000,http://127.0.0.1:3000,http://web:3000
+      MCP_ALLOWED_ORIGINS: ${MCP_ALLOWED_ORIGINS:-http://localhost:3000,http://127.0.0.1:3000,http://web:3000}
       PENDING_CONSENT_TTL_SECONDS: "300"
       PRODUCT_PROVIDER: ${PRODUCT_PROVIDER:-demo}
       SERPAPI_API_KEY: ${SERPAPI_API_KEY:-}
     ports:
-      - "3101:3101"
+      - "127.0.0.1:3101:3101"
     depends_on:
       db:
         condition: service_healthy
@@ -48,7 +48,7 @@ services:
     environment:
       DATABASE_URL: postgresql://shopsmart:shopsmart@db:5432/shopsmart?schema=public
       MCP_SERVER_URL: http://mcp:3101/mcp
-      NEXT_PUBLIC_APP_URL: http://localhost:3000
+      NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
       # LLM_PROVIDER: none (deterministic) | openai | bedrock
       # For bedrock on EC2: set LLM_PROVIDER=bedrock + AWS_REGION, attach an
       # instance IAM role (bedrock:InvokeModel), and raise the EC2 metadata

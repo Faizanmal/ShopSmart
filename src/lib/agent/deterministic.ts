@@ -103,7 +103,7 @@ export async function runDeterministicAgent(
 
       if (pending && (wantsConfirm(userMessage) || wantsDeny(userMessage))) {
         const approved = wantsConfirm(userMessage);
-        const confirm = await call("confirm_cart_add", {
+        const confirm = await call("confirm_cart_change", {
           sessionId,
           pendingActionId: pending.id,
           approved,
@@ -112,7 +112,7 @@ export async function runDeterministicAgent(
         cart = cartRes.result;
         const assistantMessage = approved
           ? confirm.ok && (confirm.result as { ok?: boolean })?.ok
-            ? `Confirmed. Added to your ShopSmart planning cart. Complete purchase manually on the retailer site — ShopSmart never checks out for you.`
+            ? `Confirmed. Your ShopSmart planning cart was updated. To buy, open the retailer link in the cart — ShopSmart never checks out or takes payment.`
             : `Confirmation failed: ${JSON.stringify(confirm.result)}`
           : "Cancelled. The cart was not changed.";
         await addTurn(sessionId, MessageRole.ASSISTANT, assistantMessage, trace);
@@ -130,9 +130,6 @@ export async function runDeterministicAgent(
         });
       }
 
-      // Step-12 safety: an immediate purchase/checkout/payment attempt is
-      // refused explicitly. It must not confirm a pending action, propose,
-      // or be silently reinterpreted as a shopping brief.
       if (isImmediatePurchaseAttempt(userMessage)) {
         await addTurn(sessionId, MessageRole.ASSISTANT, PURCHASE_REFUSAL_MESSAGE, trace);
         return pack({

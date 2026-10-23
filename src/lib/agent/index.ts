@@ -29,8 +29,8 @@ export async function runShoppingAgent(
   sessionId: string,
   userMessage: string,
 ): Promise<AgentResponse> {
-  // Purchase/checkout attempts always take the deterministic refusal path,
-  // even when an LLM is configured — a model must never "helpfully" buy.
+  // Purchase/checkout attempts always take the deterministic refusal path —
+  // a model must never pretend to buy.
   if (isImmediatePurchaseAttempt(userMessage)) {
     const det = await runDeterministicAgent(sessionId, userMessage);
     return { ...det, orchestration: "deterministic" };

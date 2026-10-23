@@ -23,7 +23,7 @@
 
 ## Cart & consent
 
-- The cart is ShopSmart's **planning cart only**. No checkout, payment, order-placement, or "buy" endpoints/tools exist by design; purchase attempts are explicitly refused.
+- The cart is ShopSmart's **planning cart only**. Buy by opening the retailer link yourself. No checkout, payment, or order-placement tools exist; purchase attempts in chat are refused.
 - A direct MCP client can propose and confirm programmatically (both calls are required; propose alone never mutates). The explicit human confirmation step is enforced by the app/API contract and the pending-action state machine: session-bound, fingerprinted (product/variant/quantity/price/retailer/source), expiring (default 300s), single-use.
 - The ShopSmart **session id is a bearer capability** (stored in browser `localStorage`). There is no per-user authentication yet — anyone with a session id can act on that session. Add auth before any multi-user deployment.
 
