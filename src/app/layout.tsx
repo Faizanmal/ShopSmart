@@ -5,6 +5,7 @@ export const metadata: Metadata = {
   title: "ShopSmart — Compare with evidence. Cart with consent.",
   description:
     "AI shopping assistant with constraint-first research, evidence-backed comparisons, and an approval-controlled planning cart. Simulated Alexa+-style MCP experience.",
+  icons: { icon: "/icon.svg" },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

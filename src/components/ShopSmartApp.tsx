@@ -139,6 +139,14 @@ export function ShopSmartApp() {
       ),
     [session?.cartItems],
   );
+  const isLiveResults = products.some((p) => p.dataProvider === "LIVE");
+  const displayProducts = useMemo(() => {
+    const rank = (overall?: string) =>
+      overall === "pass" ? 0 : overall === "uncertain" ? 1 : overall === "fail" ? 2 : 3;
+    return [...products].sort(
+      (a, b) => rank(verifications[a.id]?.overall) - rank(verifications[b.id]?.overall),
+    );
+  }, [products, verifications]);
 
   async function sendMessage(text: string) {
     if (!session || !text.trim()) return;
@@ -392,9 +400,12 @@ export function ShopSmartApp() {
             Compare with evidence. Cart with consent.
           </h1>
           <p className="mt-2 max-w-2xl text-sm text-[var(--muted)] sm:text-base">
-            Constraint-first shopping for India (INR). Catalog results are a dated snapshot of
-            real products and retailer links — not live pricing. Claims without evidence stay
-            unknown — ShopSmart never purchases on your behalf. Buy via the retailer link.
+            Constraint-first shopping for India (INR).{" "}
+            {isLiveResults
+              ? "Results are live Amazon.in listings fetched just now — verify price and availability on the retailer page."
+              : "Catalog results are a dated snapshot of real products and retailer links — not live pricing."}{" "}
+            Claims without evidence stay unknown — ShopSmart never purchases on your behalf. Buy
+            via the retailer link.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -408,10 +419,8 @@ export function ShopSmartApp() {
                 ? "connected"
                 : "offline"}
           </Badge>
-          <Badge tone={products.some((p) => p.dataProvider === "LIVE") ? "ok" : "demo"}>
-            {products.some((p) => p.dataProvider === "LIVE")
-              ? "Live data · Amazon.in"
-              : "Catalog snapshot · 21 Oct 2026"}
+          <Badge tone={isLiveResults ? "ok" : "demo"}>
+            {isLiveResults ? "Live data · Amazon.in" : "Catalog snapshot · 21 Oct 2026"}
           </Badge>
           <Button variant="secondary" onClick={() => setCartOpen(true)}>
             Cart ({cartCount}) · {formatInr(knownCartTotal)}
@@ -577,7 +586,7 @@ export function ShopSmartApp() {
             </Panel>
           ) : (
             <div className="grid gap-3 sm:grid-cols-2">
-              {products.map((p) => (
+              {displayProducts.map((p) => (
                 <ProductCard
                   key={p.id}
                   product={p}

@@ -178,7 +178,17 @@ export function ProductCard({
               Details
             </Button>
           )}
-          <Button onClick={onPropose}>Propose cart</Button>
+          <Button
+            onClick={onPropose}
+            disabled={verification?.overall === "fail"}
+            title={
+              verification?.overall === "fail"
+                ? "Fails a hard constraint — cannot be added to the cart"
+                : undefined
+            }
+          >
+            {verification?.overall === "fail" ? "Fails constraints" : "Propose cart"}
+          </Button>
           <a
             href={product.sourceUrl}
             target="_blank"

@@ -137,14 +137,14 @@ export function parseShoppingBrief(rawText: string): ParsedBrief {
     "UNVERIFIABLE",
     "delivery_cost",
     "Delivery charges",
-    "not verified by demo catalog",
+    "not supplied by catalog or listing data",
   );
   push(
     criteria,
     "UNVERIFIABLE",
     "tax_breakdown",
     "Tax breakdown",
-    "not itemized in demo catalog",
+    "not itemized in catalog or listing data",
   );
 
   return {

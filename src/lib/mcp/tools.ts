@@ -159,6 +159,21 @@ export async function executeTool(name: string, args: unknown): Promise<unknown>
     }
     case "propose_cart_add": {
       const input = toolSchemas.propose_cart_add.parse(args);
+      await assertSession(input.sessionId);
+      const product = await getProductProvider().getById(input.productId);
+      if (!product) {
+        return { ok: false, code: "product_not_found", error: "Product not found." };
+      }
+      const criteria = await criteriaForSession(input.sessionId);
+      const verification = verifyProductRequirements(product, criteria);
+      if (verification.overall === "fail") {
+        const violated = verification.hardViolations.map((v) => v.label).join(", ");
+        return {
+          ok: false,
+          code: "hard_constraint_violation",
+          error: `Not proposed: this product violates hard constraints (${violated})`,
+        };
+      }
       return proposeCartAdd(input);
     }
     case "confirm_cart_add": {
